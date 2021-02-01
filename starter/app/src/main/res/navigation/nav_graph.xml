@@ -10,7 +10,14 @@
         android:id="@+id/launchFragment"
         android:name="com.example.android.politicalpreparedness.launch.LaunchFragment"
         android:label="fragment_launch"
-        tools:layout="@layout/fragment_launch"/>
+        tools:layout="@layout/fragment_launch">
+        <action
+            android:id="@+id/action_launchFragment_to_representativeFragment"
+            app:destination="@id/representativeFragment" />
+        <action
+            android:id="@+id/action_launchFragment_to_electionsFragment"
+            app:destination="@id/electionsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/representativeFragment"
@@ -27,6 +34,9 @@
         <argument
             android:name="arg_division"
             app:argType="com.example.android.politicalpreparedness.network.models.Division" />
+        <action
+            android:id="@+id/action_voterInfoFragment_to_electionsFragment"
+            app:destination="@id/electionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/electionsFragment"
