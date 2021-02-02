@@ -70,10 +70,13 @@ dependencies {
     // Glide
     //TODO: Add Glide Implementation
 
-    //Room
+    // Room
     implementation "androidx.room:room-runtime:$version_room"
     kapt "androidx.room:room-compiler:$version_room"
 
     // Location
     implementation "com.google.android.gms:play-services-location:$version_play_services_location"
+
+    // Timber
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }
