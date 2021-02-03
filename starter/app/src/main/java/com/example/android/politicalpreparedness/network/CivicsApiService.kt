@@ -14,9 +14,9 @@ private const val BASE_URL = "https://www.googleapis.com/civicinfo/v2/"
 
 // TODO: Add custom adapter ElectionAdapter (included in project)
 private val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
         .add(ElectionAdapter())
-        .add(DateAdapter)
+        .add(DateAdapter())
+        .add(KotlinJsonAdapterFactory())
         .build()
 
 private val retrofit = Retrofit.Builder()

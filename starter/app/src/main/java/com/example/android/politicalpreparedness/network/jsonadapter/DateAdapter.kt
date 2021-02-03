@@ -5,7 +5,7 @@ import com.squareup.moshi.ToJson
 import java.text.SimpleDateFormat
 import java.util.*
 
-object DateAdapter {
+class DateAdapter {
     private val format = SimpleDateFormat("yyyy-MM-dd")
 
     @FromJson
