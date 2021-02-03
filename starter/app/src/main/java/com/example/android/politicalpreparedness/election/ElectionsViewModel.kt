@@ -16,8 +16,8 @@ class ElectionsViewModel: ViewModel() {
     val upcomingElections: LiveData<List<Election>>
         get() = _upcomingElections
 
-    private val _navigateToVoterInfo = MutableLiveData<Int>()
-    val navigateToVoterInfo: LiveData<Int>
+    private val _navigateToVoterInfo = MutableLiveData<Election>()
+    val navigateToVoterInfo: LiveData<Election>
         get() = _navigateToVoterInfo
 
     //TODO: Create live data val for saved elections
@@ -40,8 +40,8 @@ class ElectionsViewModel: ViewModel() {
         }
     }
 
-    fun navigateToVoterInfoWith(electionId: Int) {
-        _navigateToVoterInfo.value = electionId
+    fun navigateToVoterInfoWith(election: Election) {
+        _navigateToVoterInfo.value = election
     }
 
     fun navigationToVoterInfoDone() {
