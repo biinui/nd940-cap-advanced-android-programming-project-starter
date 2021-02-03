@@ -12,7 +12,6 @@ import timber.log.Timber
 //TODO: Construct ViewModel and provide election datasource
 class ElectionsViewModel: ViewModel() {
 
-    //TODO: Create live data val for upcoming elections
     private val _upcomingElections = MutableLiveData<List<Election>>()
     val upcomingElections: LiveData<List<Election>>
         get() = _upcomingElections
@@ -28,7 +27,7 @@ class ElectionsViewModel: ViewModel() {
         getElections()
     }
 
-    //TODO: Create val and functions to populate live data for upcoming elections from the API and saved elections from local database
+    //TODO: save elections to the local database
     private fun getElections() {
         viewModelScope.launch {
             try {
@@ -41,7 +40,6 @@ class ElectionsViewModel: ViewModel() {
         }
     }
 
-    //TODO: Create functions to navigate to saved or upcoming election voter info
     fun navigateToVoterInfoWith(electionId: Int) {
         _navigateToVoterInfo.value = electionId
     }
@@ -49,5 +47,7 @@ class ElectionsViewModel: ViewModel() {
     fun navigationToVoterInfoDone() {
         _navigateToVoterInfo.value = null
     }
+
+    //TODO: Create functions to navigate to saved election voter info
 
 }
