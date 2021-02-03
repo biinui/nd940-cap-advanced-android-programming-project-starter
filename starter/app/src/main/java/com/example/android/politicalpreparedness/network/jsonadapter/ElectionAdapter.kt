@@ -4,7 +4,7 @@ import com.example.android.politicalpreparedness.network.models.Division
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
 
-object ElectionAdapter {
+class ElectionAdapter {
     @FromJson
     fun divisionFromJson(ocdDivisionId: String): Division {
         val countryDelimiter = "country:"
