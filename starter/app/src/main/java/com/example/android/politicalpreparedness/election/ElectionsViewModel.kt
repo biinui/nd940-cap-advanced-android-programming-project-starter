@@ -33,9 +33,9 @@ class ElectionsViewModel: ViewModel() {
             try {
                 val electionResponse = CivicsApi.retrofitService.getElections()
                 _upcomingElections.value = electionResponse.elections
-                Timber.i("result: $electionResponse.")
+                Timber.i("getElections: $electionResponse")
             } catch (e: Exception) {
-                Timber.e("getElections.onFailure: ${e.localizedMessage}")
+                Timber.e("getElections: ${e.localizedMessage}")
             }
         }
     }
