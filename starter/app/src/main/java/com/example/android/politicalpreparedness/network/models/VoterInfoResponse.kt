@@ -3,11 +3,13 @@ package com.example.android.politicalpreparedness.network.models
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class VoterInfoResponse (
-    val election: Election,
-    val pollingLocations: String? = null, //TODO: Future Use
-    @Transient
-    val contests: String? = null, //TODO: Future Use
-    val state: List<State>? = emptyList(),
-    val electionElectionOfficials: List<ElectionOfficial>? = null
+class VoterInfoResponse ( val election: Election
+                        , val state: List<State>? = null
+                        , val electionElectionOfficials: List<ElectionOfficial>? = null
+
+                        // TODO: Future Use
+                        , @Transient
+                          val contests: String? = null
+                        , @Transient
+                          val pollingLocations: String? = null
 )
