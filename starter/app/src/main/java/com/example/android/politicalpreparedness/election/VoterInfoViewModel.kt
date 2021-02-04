@@ -3,11 +3,9 @@ package com.example.android.politicalpreparedness.election
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.politicalpreparedness.network.CivicsApi
-import com.example.android.politicalpreparedness.network.models.Address
 import com.example.android.politicalpreparedness.repository.ElectionRepository
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.Exception
 
 class VoterInfoViewModel(private val repository: ElectionRepository) : ViewModel() {
 
@@ -21,7 +19,7 @@ class VoterInfoViewModel(private val repository: ElectionRepository) : ViewModel
     private fun getVoterInfo() {
         viewModelScope.launch {
             try {
-                val dummyAddress = Address("", "", "Modesto", "CA", "")
+                val dummyAddress = "Modesto"
                 val dummyElectionId = 2000
                 val voterResponse = CivicsApi.retrofitService.getVoterInfo(dummyAddress, dummyElectionId)
                 Timber.i("getVoterInfo.election: ${voterResponse.election}")

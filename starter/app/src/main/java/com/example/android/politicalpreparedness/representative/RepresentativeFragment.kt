@@ -10,6 +10,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.android.politicalpreparedness.databinding.FragmentRepresentativeBinding
 import com.example.android.politicalpreparedness.network.models.Address
 import java.util.Locale
@@ -20,13 +21,14 @@ class DetailFragment : Fragment() {
         //TODO: Add Constant for Location request
     }
 
-    //TODO: Declare ViewModel
-
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
         val binding = FragmentRepresentativeBinding.inflate(inflater, container, false)
+
+        //TODO: Declare ViewModel
+        val viewModel = ViewModelProvider(this).get(RepresentativeViewModel::class.java)
 
         //TODO: Define and assign Representative adapter
 

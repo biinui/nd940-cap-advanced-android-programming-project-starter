@@ -8,6 +8,6 @@ class VoterInfoResponse (
     val pollingLocations: String? = null, //TODO: Future Use
     @Transient
     val contests: String? = null, //TODO: Future Use
-    val state: List<State>? = null,
+    val state: List<State>? = emptyList(),
     val electionElectionOfficials: List<ElectionOfficial>? = null
 )
