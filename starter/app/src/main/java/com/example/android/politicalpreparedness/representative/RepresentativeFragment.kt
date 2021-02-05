@@ -6,14 +6,21 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.android.politicalpreparedness.R
 import com.example.android.politicalpreparedness.databinding.FragmentRepresentativeBinding
 import com.example.android.politicalpreparedness.network.models.Address
-import java.util.Locale
+import com.example.android.politicalpreparedness.representative.adapter.RepresentativeListAdapter
+import java.util.*
 
 class DetailFragment : Fragment() {
 
@@ -25,18 +32,41 @@ class DetailFragment : Fragment() {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        val binding = FragmentRepresentativeBinding.inflate(inflater, container, false)
-
         //TODO: Declare ViewModel
         val viewModel = ViewModelProvider(this).get(RepresentativeViewModel::class.java)
 
+        val binding = FragmentRepresentativeBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+
         //TODO: Define and assign Representative adapter
+        val representativeListAdapter = RepresentativeListAdapter()
+        binding.representativeList.adapter = representativeListAdapter
 
         //TODO: Populate Representative adapter
+        viewModel.representativeList.observe(viewLifecycleOwner, Observer { representativeList ->
+            representativeList?.let {
+                representativeListAdapter.submitList(representativeList)
+            }
+        })
 
         //TODO: Establish button listeners for field and location search
 
+        populateStateSpinner(binding)
+
         return binding.root
+    }
+
+    private fun populateStateSpinner(binding: FragmentRepresentativeBinding) {
+        val spinner: Spinner = binding.state
+        ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.states,
+                android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+        }
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

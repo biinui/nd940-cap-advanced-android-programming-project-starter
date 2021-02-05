@@ -40,7 +40,7 @@ class ElectionsViewModel: ViewModel() {
         }
     }
 
-    fun navigateToVoterInfoWith(election: Election) {
+    fun navigateToVoterInfoAbout(election: Election) {
         _navigateToVoterInfo.value = election
     }
 

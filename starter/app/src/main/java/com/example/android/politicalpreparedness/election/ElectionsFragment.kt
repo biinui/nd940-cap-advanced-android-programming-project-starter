@@ -24,20 +24,19 @@ class ElectionsFragment : Fragment() {
         val binding = FragmentElectionBinding.inflate(inflater, container, false)
 
         val upcomingElectionListAdapter = ElectionListAdapter(ElectionListener { election ->
-            viewModel.navigateToVoterInfoWith(election)
+            viewModel.navigateToVoterInfoAbout(election)
+        })
+        binding.upcomingElectionList.adapter = upcomingElectionListAdapter
+        viewModel.upcomingElections.observe(viewLifecycleOwner, Observer { electionList ->
+            electionList?.let {
+                upcomingElectionListAdapter.submitList(electionList)
+            }
         })
 
         viewModel.navigateToVoterInfo.observe(viewLifecycleOwner, Observer { election ->
             election?.let {
                 findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(election.id, election.division))
                 viewModel.navigationToVoterInfoDone()
-            }
-        })
-
-        binding.upcomingElectionList.adapter = upcomingElectionListAdapter
-        viewModel.upcomingElections.observe(viewLifecycleOwner, Observer { electionList ->
-            electionList?.let {
-                upcomingElectionListAdapter.submitList(electionList)
             }
         })
 
