@@ -1,26 +1,25 @@
 package com.example.android.politicalpreparedness.election
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.android.politicalpreparedness.network.CivicsApi
+import androidx.lifecycle.*
 import com.example.android.politicalpreparedness.network.models.Election
-import com.example.android.politicalpreparedness.network.models.State
-import com.example.android.politicalpreparedness.repository.ElectionRepository
+import com.example.android.politicalpreparedness.repository.VoterInfoRepository
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class VoterInfoViewModel(private val repository: ElectionRepository) : ViewModel() {
+class VoterInfoViewModel( private val repository: VoterInfoRepository
+                        , val election: Election
+                        ) : ViewModel() {
 
-    //TODO: Add live data to hold voter info
-    private var _election = MutableLiveData<Election>()
-    val election: LiveData<Election>
-        get() = _election
+    val state = repository.state
 
-    private var _state = MutableLiveData<State>()
-    val state: LiveData<State>
-        get() = _state
+    private val savedElection = repository.savedElection
+    var followButtonText = Transformations.map(savedElection) {
+        if (it == null) {
+            "Follow"
+        } else {
+            "Unfollow"
+        }
+    }
 
     private var _electionInfoUrl = MutableLiveData<String>()
     val electionInfoUrl: LiveData<String>
@@ -38,26 +37,21 @@ class VoterInfoViewModel(private val repository: ElectionRepository) : ViewModel
         getVoterInfo()
     }
 
-    //TODO: Add var and methods to populate voter info
     private fun getVoterInfo() {
         viewModelScope.launch {
             try {
                 val dummyAddress = "Modesto"
-                val dummyElectionId = 2000
-                val voterResponse = CivicsApi.retrofitService.getVoterInfo(dummyAddress, dummyElectionId)
-                _state.value = voterResponse.state?.get(0)
-                _election.value = voterResponse.election
-                Timber.i("getVoterInfo.election: ${voterResponse.election}")
-                Timber.i("getVoterInfo.state: ${voterResponse.state}")
+                repository.refreshVoterInfo(dummyAddress, election.id)
+                repository.getElectionById(election.id)
             } catch (e: Exception) {
+                // TODO show toast
                 Timber.e("getVoterInfo.exception: ${e.localizedMessage}")
             }
         }
     }
 
-    //TODO: Add var and methods to support loading URLs
     fun openElectionInfoUrl() {
-        _electionInfoUrl.value = _state.value?.electionAdministrationBody?.electionInfoUrl
+        _electionInfoUrl.value = state.value?.electionAdministrationBody?.electionInfoUrl
     }
 
     fun openElectionInfoUrlDone() {
@@ -65,7 +59,7 @@ class VoterInfoViewModel(private val repository: ElectionRepository) : ViewModel
     }
 
     fun openVotingLocationFinderUrl() {
-        _votingLocationFinderUrl.value = _state.value?.electionAdministrationBody?.votingLocationFinderUrl
+        _votingLocationFinderUrl.value = state.value?.electionAdministrationBody?.votingLocationFinderUrl
     }
 
     fun openVotingLocationFinderUrlDone() {
@@ -73,7 +67,7 @@ class VoterInfoViewModel(private val repository: ElectionRepository) : ViewModel
     }
 
     fun openBallotInfoUrl() {
-        _ballotInfoUrl.value = _state.value?.electionAdministrationBody?.ballotInfoUrl
+        _ballotInfoUrl.value = state.value?.electionAdministrationBody?.ballotInfoUrl
     }
 
     fun openBallotInfoUrlDone() {
@@ -86,5 +80,17 @@ class VoterInfoViewModel(private val repository: ElectionRepository) : ViewModel
     /**
      * Hint: The saved state can be accomplished in multiple ways. It is directly related to how elections are saved/removed from the database.
      */
+
+    fun toggleFollow() {
+        viewModelScope.launch {
+            repository.saveElection(election)
+        }
+    }
+
+    fun unfollowElection() {
+        viewModelScope.launch {
+            repository.deleteElection(election)
+        }
+    }
 
 }

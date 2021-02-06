@@ -17,4 +17,5 @@
     <string name="office">Office</string>
     <string name="officials_name">Official\'s Name</string>
     <string name="officials_party">Official\'s Party</string>
+    <string name="saved_elections">Saved Elections</string>
 </resources>

@@ -9,9 +9,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.example.android.politicalpreparedness.database.ElectionDatabase
 import com.example.android.politicalpreparedness.databinding.FragmentVoterInfoBinding
-import com.example.android.politicalpreparedness.repository.ElectionRepository
+import com.example.android.politicalpreparedness.repository.VoterInfoRepository
 
 class VoterInfoFragment : Fragment() {
 
@@ -19,9 +20,13 @@ class VoterInfoFragment : Fragment() {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        val repository = ElectionRepository(ElectionDatabase.getInstance(requireActivity().application))
-        //TODO: Add ViewModel values and create ViewModel
-        val viewModelFactory = VoterInfoViewModelFactory(repository)
+        val args = navArgs<VoterInfoFragmentArgs>()
+        val election = args.value.argElection
+
+        val database = ElectionDatabase.getInstance(requireActivity().application)
+        val repository = VoterInfoRepository(database)
+
+        val viewModelFactory = VoterInfoViewModelFactory(repository, election)
         val viewModel = ViewModelProvider(this, viewModelFactory).get(VoterInfoViewModel::class.java)
 
         val binding = FragmentVoterInfoBinding.inflate(inflater, container, false)
@@ -33,7 +38,7 @@ class VoterInfoFragment : Fragment() {
         Hint: You will need to ensure proper data is provided from previous fragment.
         */
 
-        //TODO: Handle loading of URLs
+
         viewModel.electionInfoUrl.observe(viewLifecycleOwner, Observer { urlStr ->
             urlStr?.let {
                 startActivityWithUrlIntentUsing(urlStr)
@@ -55,13 +60,16 @@ class VoterInfoFragment : Fragment() {
             }
         })
 
-        //TODO: Handle save button UI state
+
+        viewModel.followButtonText.observe(viewLifecycleOwner, Observer {
+            binding.followElectionButton.visibility = View.VISIBLE
+        })
+
         //TODO: cont'd Handle save button clicks
 
         return binding.root
     }
 
-    //TODO: Create method to load URL intents
     private fun startActivityWithUrlIntentUsing(urlStr: String) {
         val uri: Uri = Uri.parse(urlStr)
         val intent = Intent(Intent.ACTION_VIEW, uri)

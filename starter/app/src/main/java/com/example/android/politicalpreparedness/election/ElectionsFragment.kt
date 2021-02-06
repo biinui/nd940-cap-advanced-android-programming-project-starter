@@ -20,12 +20,14 @@ class ElectionsFragment : Fragment() {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        val repository = ElectionRepository(ElectionDatabase.getInstance(requireContext()))
+        val database = ElectionDatabase.getInstance(requireActivity().application)
+        val repository = ElectionRepository(database)
 
         val viewModelFactory = ElectionsViewModelFactory(repository)
         val viewModel = ViewModelProvider(this, viewModelFactory).get(ElectionsViewModel::class.java)
 
         val binding = FragmentElectionBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
 
         val upcomingElectionListAdapter = ElectionListAdapter(ElectionListener { election ->
             viewModel.navigateToVoterInfoAbout(election)
@@ -37,9 +39,19 @@ class ElectionsFragment : Fragment() {
             }
         })
 
+        val savedElectionListAdapter = ElectionListAdapter(ElectionListener { election ->
+            viewModel.navigateToVoterInfoAbout(election)
+        })
+        binding.savedElectionList.adapter = savedElectionListAdapter
+        viewModel.savedElections.observe(viewLifecycleOwner, Observer { electionList ->
+            electionList?.let {
+                savedElectionListAdapter.submitList(electionList)
+            }
+        })
+
         viewModel.navigateToVoterInfo.observe(viewLifecycleOwner, Observer { election ->
             election?.let {
-                findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(election.id, election.division))
+                findNavController().navigate(ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(election, election.division))
                 viewModel.navigationToVoterInfoDone()
             }
         })

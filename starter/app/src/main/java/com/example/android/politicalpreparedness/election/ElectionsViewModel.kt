@@ -11,14 +11,12 @@ import timber.log.Timber
 import java.lang.Exception
 
 class ElectionsViewModel(private val repository: ElectionRepository): ViewModel() {
-
-    val upcomingElections = repository.elections
+    val upcomingElections = repository.upcomingElections
+    val savedElections = repository.savedElections
 
     private val _navigateToVoterInfo = MutableLiveData<Election>()
     val navigateToVoterInfo: LiveData<Election>
         get() = _navigateToVoterInfo
-
-    //TODO: Create live data val for saved elections
 
     init {
         refreshElections()
