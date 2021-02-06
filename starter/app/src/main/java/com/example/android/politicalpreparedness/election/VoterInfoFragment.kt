@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.example.android.politicalpreparedness.R
 import com.example.android.politicalpreparedness.database.ElectionDatabase
 import com.example.android.politicalpreparedness.databinding.FragmentVoterInfoBinding
 import com.example.android.politicalpreparedness.repository.VoterInfoRepository
@@ -61,8 +62,16 @@ class VoterInfoFragment : Fragment() {
         })
 
 
-        viewModel.followButtonText.observe(viewLifecycleOwner, Observer {
+        viewModel.savedElection.observe(viewLifecycleOwner, Observer {
             binding.followElectionButton.visibility = View.VISIBLE
+            when (it == null) {
+                true -> {
+                    binding.followElectionButton.text = getString(R.string.follow_election)
+                }
+                false -> {
+                    binding.followElectionButton.text = getString(R.string.unfollow_election)
+                }
+            }
         })
 
         //TODO: cont'd Handle save button clicks

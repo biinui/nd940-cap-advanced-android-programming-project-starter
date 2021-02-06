@@ -12,14 +12,7 @@ class VoterInfoViewModel( private val repository: VoterInfoRepository
 
     val state = repository.state
 
-    private val savedElection = repository.savedElection
-    var followButtonText = Transformations.map(savedElection) {
-        if (it == null) {
-            "Follow"
-        } else {
-            "Unfollow"
-        }
-    }
+    val savedElection = repository.savedElection
 
     private var _electionInfoUrl = MutableLiveData<String>()
     val electionInfoUrl: LiveData<String>
@@ -74,22 +67,15 @@ class VoterInfoViewModel( private val repository: VoterInfoRepository
         _ballotInfoUrl.value = null
     }
 
-    //TODO: Add var and methods to save and remove elections to local database
-    //TODO: cont'd -- Populate initial state of save button to reflect proper action based on election saved status
-
-    /**
-     * Hint: The saved state can be accomplished in multiple ways. It is directly related to how elections are saved/removed from the database.
-     */
-
     fun toggleFollow() {
         viewModelScope.launch {
-            repository.saveElection(election)
-        }
-    }
-
-    fun unfollowElection() {
-        viewModelScope.launch {
-            repository.deleteElection(election)
+            if (savedElection.value == null) {
+                repository.saveElection(election)
+                savedElection.value = election
+            } else {
+                repository.deleteElection(election)
+                savedElection.value = null
+            }
         }
     }
 
