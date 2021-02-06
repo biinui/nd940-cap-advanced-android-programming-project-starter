@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.android.politicalpreparedness.database.ElectionDatabase
 import com.example.android.politicalpreparedness.databinding.FragmentVoterInfoBinding
 import com.example.android.politicalpreparedness.repository.ElectionRepository
 
@@ -18,7 +19,7 @@ class VoterInfoFragment : Fragment() {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        val repository = ElectionRepository(requireActivity().application)
+        val repository = ElectionRepository(ElectionDatabase.getInstance(requireActivity().application))
         //TODO: Add ViewModel values and create ViewModel
         val viewModelFactory = VoterInfoViewModelFactory(repository)
         val viewModel = ViewModelProvider(this, viewModelFactory).get(VoterInfoViewModel::class.java)

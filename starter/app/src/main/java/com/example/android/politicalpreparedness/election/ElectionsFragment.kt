@@ -8,9 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.android.politicalpreparedness.database.ElectionDatabase
 import com.example.android.politicalpreparedness.databinding.FragmentElectionBinding
 import com.example.android.politicalpreparedness.election.adapter.ElectionListAdapter
 import com.example.android.politicalpreparedness.election.adapter.ElectionListener
+import com.example.android.politicalpreparedness.repository.ElectionRepository
 
 class ElectionsFragment : Fragment() {
 
@@ -18,7 +20,9 @@ class ElectionsFragment : Fragment() {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        val viewModelFactory = ElectionsViewModelFactory()
+        val repository = ElectionRepository(ElectionDatabase.getInstance(requireContext()))
+
+        val viewModelFactory = ElectionsViewModelFactory(repository)
         val viewModel = ViewModelProvider(this, viewModelFactory).get(ElectionsViewModel::class.java)
 
         val binding = FragmentElectionBinding.inflate(inflater, container, false)
@@ -42,7 +46,5 @@ class ElectionsFragment : Fragment() {
 
         return binding.root
     }
-
-    //TODO: Refresh adapters when fragment loads
 
 }

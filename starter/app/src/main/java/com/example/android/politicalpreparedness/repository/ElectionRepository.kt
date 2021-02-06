@@ -1,12 +1,20 @@
 package com.example.android.politicalpreparedness.repository
 
-import android.app.Application
-import com.example.android.politicalpreparedness.database.ElectionDao
+import androidx.lifecycle.LiveData
 import com.example.android.politicalpreparedness.database.ElectionDatabase
+import com.example.android.politicalpreparedness.network.CivicsApi
+import com.example.android.politicalpreparedness.network.models.Election
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class ElectionRepository(private val application: Application) {
-    private val db = ElectionDatabase.getInstance(application)
-    private val dao = db.electionDao
+class ElectionRepository(private val database: ElectionDatabase) {
+    val elections: LiveData<List<Election>> = database.electionDao.getElections()
 
+    suspend fun refreshElections() {
+        withContext(Dispatchers.IO) {
+            val electionResponse = CivicsApi.retrofitService.getElections()
+            database.electionDao.insertElections(electionResponse.elections)
+        }
+    }
 
 }

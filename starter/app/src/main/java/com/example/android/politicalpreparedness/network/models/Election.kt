@@ -7,14 +7,13 @@ import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import java.util.*
 
-@Entity(tableName = "election_table")
+@Entity
 data class Election( @PrimaryKey
                      val id: Int
-                   , @ColumnInfo(name = "name")
-                     val name: String
-                   , @ColumnInfo(name = "election_day")
-                     val electionDay: Date
+                   , val name: String
+                   , val electionDay: Date
                    , @Embedded(prefix = "division_")
                      @Json(name="ocdDivisionId")
                      val division: Division
+                   , val saved: Boolean = false
 )

@@ -4,17 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.politicalpreparedness.network.CivicsApi
 import com.example.android.politicalpreparedness.network.models.Election
+import com.example.android.politicalpreparedness.repository.ElectionRepository
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.Exception
 
-//TODO: Construct ViewModel and provide election datasource
-class ElectionsViewModel: ViewModel() {
+class ElectionsViewModel(private val repository: ElectionRepository): ViewModel() {
 
-    private val _upcomingElections = MutableLiveData<List<Election>>()
-    val upcomingElections: LiveData<List<Election>>
-        get() = _upcomingElections
+    val upcomingElections = repository.elections
 
     private val _navigateToVoterInfo = MutableLiveData<Election>()
     val navigateToVoterInfo: LiveData<Election>
@@ -23,19 +21,16 @@ class ElectionsViewModel: ViewModel() {
     //TODO: Create live data val for saved elections
 
     init {
-        _upcomingElections.value = emptyList()
-        getElections()
+        refreshElections()
     }
 
-    //TODO: save elections to the local database
-    private fun getElections() {
+    private fun refreshElections() {
         viewModelScope.launch {
             try {
-                val electionResponse = CivicsApi.retrofitService.getElections()
-                _upcomingElections.value = electionResponse.elections
-                Timber.i("getElections: $electionResponse")
+                repository.refreshElections()
             } catch (e: Exception) {
-                Timber.e("getElections: ${e.localizedMessage}")
+                // TODO show toast
+                Timber.i("refreshElections: ${e.localizedMessage}")
             }
         }
     }
@@ -47,7 +42,5 @@ class ElectionsViewModel: ViewModel() {
     fun navigationToVoterInfoDone() {
         _navigateToVoterInfo.value = null
     }
-
-    //TODO: Create functions to navigate to saved election voter info
 
 }
