@@ -74,8 +74,6 @@ class VoterInfoFragment : Fragment() {
             }
         })
 
-        //TODO: cont'd Handle save button clicks
-
         return binding.root
     }
 
