@@ -34,7 +34,13 @@ class RepresentativeViewHolder(val binding: ItemRepresentativeBinding): Recycler
         binding.representativeImage.setImageResource(R.drawable.ic_profile)
 
         //TODO: Show social links ** Hint: Use provided helper methods
+        item.official.channels?.let {
+            showSocialLinks(item.official.channels)
+        }
         //TODO: Show www link ** Hint: Use provided helper methods
+        item.official.urls?.let {
+            showWWWLinks(item.official.urls)
+        }
 
         binding.executePendingBindings()
     }
@@ -49,10 +55,12 @@ class RepresentativeViewHolder(val binding: ItemRepresentativeBinding): Recycler
 
     private fun showSocialLinks(channels: List<Channel>) {
         val facebookUrl = getFacebookUrl(channels)
-        if (!facebookUrl.isNullOrBlank()) { enableLink(binding.facebookIcon, facebookUrl) }
+        if (facebookUrl.isNullOrBlank()) { makeAppearanceDisabled(binding.facebookIcon) }
+        else                             { enableLink(binding.facebookIcon, facebookUrl) }
 
         val twitterUrl = getTwitterUrl(channels)
-        if (!twitterUrl.isNullOrBlank()) { enableLink(binding.twitterIcon, twitterUrl) }
+        if (twitterUrl.isNullOrBlank()) { makeAppearanceDisabled(binding.twitterIcon) }
+        else                            { enableLink(binding.twitterIcon, twitterUrl) }
     }
 
     private fun showWWWLinks(urls: List<String>) {
@@ -71,7 +79,12 @@ class RepresentativeViewHolder(val binding: ItemRepresentativeBinding): Recycler
                 .firstOrNull()
     }
 
+    private fun makeAppearanceDisabled(view: ImageView) {
+        view.alpha = 0.4F
+    }
+
     private fun enableLink(view: ImageView, url: String) {
+        view.alpha = 1F
         view.visibility = View.VISIBLE
         view.setOnClickListener { setIntent(url) }
     }
