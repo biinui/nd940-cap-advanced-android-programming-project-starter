@@ -34,6 +34,7 @@
             android:autofillHints=""
             android:hint="@string/address_line_1"
             android:inputType="textPostalAddress"
+            android:text="@={viewModel.address.line1}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_title" />
 
@@ -46,6 +47,7 @@
             android:autofillHints=""
             android:hint="@string/address_line_2"
             android:inputType="textPostalAddress"
+            android:text="@={viewModel.address.line2}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/address_line_1_edit" />
 
@@ -58,6 +60,7 @@
             android:autofillHints=""
             android:hint="@string/city"
             android:inputType="textPostalAddress"
+            android:text="@={viewModel.address.city}"
             app:layout_constraintEnd_toStartOf="@id/state_spinner"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/address_line_2_edit" />
@@ -71,6 +74,8 @@
             android:layout_height="0dp"
             android:autofillHints=""
             android:inputType="textPostalAddress"
+            android:entries="@array/states"
+            app:stateValue="@{viewModel.address.state}"
             app:layout_constraintBottom_toBottomOf="@id/city_edit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/city_edit"
@@ -85,6 +90,7 @@
             android:autofillHints=""
             android:hint="@string/zip"
             android:inputType="number"
+            android:text="@={viewModel.address.zip}"
             android:maxLength="5"
             app:layout_constraintEnd_toEndOf="@id/city_edit"
             app:layout_constraintStart_toStartOf="parent"

@@ -11,20 +11,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.AdapterView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.android.politicalpreparedness.R
 import com.example.android.politicalpreparedness.databinding.FragmentRepresentativeBinding
 import com.example.android.politicalpreparedness.network.models.Address
 import com.example.android.politicalpreparedness.representative.adapter.RepresentativeListAdapter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import kotlinx.android.synthetic.main.fragment_representative.*
 import java.util.*
 
 
@@ -35,6 +32,7 @@ class DetailFragment : Fragment() {
     }
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    val viewModel by lazy { ViewModelProvider(this).get(RepresentativeViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -42,10 +40,9 @@ class DetailFragment : Fragment() {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        val viewModel = ViewModelProvider(this).get(RepresentativeViewModel::class.java)
-
         val binding = FragmentRepresentativeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
+        binding.viewModel = viewModel
 
         val representativeListAdapter = RepresentativeListAdapter()
         binding.representativeList.adapter = representativeListAdapter
@@ -61,22 +58,21 @@ class DetailFragment : Fragment() {
             getLocation()
         }
 
-        populateStateSpinner(binding)
-
-        return binding.root
-    }
-
-    private fun populateStateSpinner(binding: FragmentRepresentativeBinding) {
-        val spinner: Spinner = binding.stateSpinner
-        ArrayAdapter.createFromResource(
-                requireContext(),
-                R.array.states,
-                android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner.adapter = adapter
+        binding.buttonSearch.setOnClickListener {
+            viewModel.onSearchMyRepresentativesClicked()
         }
 
+        binding.stateSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                viewModel.address.value?.state = binding.stateSpinner.selectedItem as String
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                viewModel.address.value?.state = binding.stateSpinner.selectedItem as String
+            }
+        }
+
+        return binding.root
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -102,13 +98,7 @@ class DetailFragment : Fragment() {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 location?.let {
                     val address = geoCodeLocation(location)
-                    address_line_1_edit.setText(address.line1)
-                    address_line_2_edit.setText(address.line2)
-                    city_edit.setText(address.city)
-                    val states = resources.getStringArray(R.array.states)
-                    val index = states.indexOf(address.state)
-                    state_spinner.setSelection(index)
-                    zip_edit.setText(address.zip)
+                    viewModel.onUseMyLocationClicked(address)
                 }
             }
         } else {
